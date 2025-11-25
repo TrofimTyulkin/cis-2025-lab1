@@ -66,20 +66,21 @@ jobs:
         tar -zxvf allure-2.24.1.tgz
         sudo mv allure-2.24.1 /opt/allure
         sudo ln -sf /opt/allure/bin/allure /usr/local/bin/allure
-    
+        
     - name: Collect all Allure results
       run: |
         mkdir -p allure-results
+        # Копируем результаты из frontend
         if [ -d "frontend/allure-results" ]; then
-        cp -r frontend/allure-results/* allure-results/ || true
+          cp -r frontend/allure-results/* allure-results/ || true
         fi
-        find backend -type d -name "allure-results" -not -path "*/node_modules/*" | while read dir;
-        do
-        if [ -d "$dir" ] && [ "$(ls -A $dir 2>/dev/null)" ]; then
-        cp -r "$dir"/* allure-results/ || true
-        fi
+        # Копируем результаты из backend (проверяем все возможные места)
+        find backend -type d -name "allure-results" -not -path "*/node_modules/*" | while read dir; do
+          if [ -d "$dir" ] && [ "$(ls -A $dir 2>/dev/null)" ]; then
+            cp -r "$dir"/* allure-results/ || true
+          fi
         done
-    
+        
     - name: Get Allure history from gh-pages
       if: always()
       continue-on-error: true
@@ -87,7 +88,16 @@ jobs:
       with:
         ref: gh-pages
         path: gh-pages
-    
+        
+    - name: Generate Allure Report with history
+      if: always()
+      uses: simple-elf/allure-report-action@master
+      with:
+        allure_results: allure-results
+        allure_report: allure-report
+        gh_pages: gh-pages
+        allure_history: allure-history
+        
     - name: Upload Allure Report
       if: always()
       uses: actions/upload-artifact@v4
@@ -95,7 +105,7 @@ jobs:
         name: allure-report
         path: allure-report
         retention-days: 30
-    
+        
     - name: Deploy Allure Report to GitHub Pages
       if: always() && (github.ref == 'refs/heads/main' || github.ref == 'refs/heads/master')
       uses: peaceiris/actions-gh-pages@v3
