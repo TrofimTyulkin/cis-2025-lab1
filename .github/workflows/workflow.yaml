@@ -1,23 +1,18 @@
 # This is a basic workflow to help you get started with Actions
 
 name: CI Pipeline
-  on:
-  push:
-    branches: [ main, master, develop ]
-  pull_request:
-    branches: [ main, master, develop ]
-  permissions:
-    contents: write
+
+on:
+push:
+  branches: [ main, master, develop ]
+pull_request:
+  branches: [ main, master, develop ]
+permissions:
+  contents: write
   pages: write
-    id-token: write
+  id-token: write
 
 # Controls when the workflow will run
-on:
-  # Triggers the workflow on push or pull request events but only for the "master" branch
-  push:
-    branches: [ "master" ]
-  pull_request:
-    branches: [ "master" ]
 
   # Allows you to run this workflow manually from the Actions tab
   workflow_dispatch:
