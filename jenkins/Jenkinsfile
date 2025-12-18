@@ -82,6 +82,11 @@ pipeline {
         }
 
     stage('Test Backend') {
+        agent {
+            docker {
+                image "registry.access.redhat.com/ubi8/dotnet-80:8.0"
+            }
+        }
         steps {
             dir('backend') {
                 script {
