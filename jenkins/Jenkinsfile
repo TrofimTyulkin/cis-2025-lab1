@@ -59,6 +59,7 @@ pipeline {
                             }
                             echo 'Рабочая дериктория для тестов backend'
                             sh 'pwd'
+                            sh 'ls -la'
                         } catch (Exception e) {
                             echo "Backend tests failed: ${e.getMessage()}"
                             currentBuild.result = 'UNSTABLE'
