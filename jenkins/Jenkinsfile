@@ -54,12 +54,11 @@ pipeline {
                         try {
                             sh 'mkdir -p allure-results'
                             sh 'rm -rf allure-results/*'
-                            withEnv(["ALLURE_RESULTS_DIR=allure-results"]) {
-                                sh 'dotnet test Tests/Tests.csproj --logger "console;verbosity=normal"'
-                            }
+                            sh 'dotnet test Tests/Tests.csproj --logger "console;verbosity=normal"'
                             echo 'Рабочая дериктория для тестов backend'
                             sh 'pwd'
                             sh 'ls -la'
+                            sh 'ls backend/allure-results'
                         } catch (Exception e) {
                             echo "Backend tests failed: ${e.getMessage()}"
                             currentBuild.result = 'UNSTABLE'
