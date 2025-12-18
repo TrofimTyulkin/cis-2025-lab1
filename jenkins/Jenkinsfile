@@ -144,6 +144,20 @@ pipeline {
                             echo "No frontend allure results to restore: ${e.getMessage()}"
                         }
                     }
+                    script {
+                        try {
+                            unstash 'backend-allure-results'
+                            sh '''
+                                if [ -d "backend/allure-results" ]; then
+                                    echo "Restored backend/allure-results, copying..."
+                                    cp -v backend/allure-results/*.json allure-results/ 2>&1 | head -20 || true
+                                    echo "backend results copied"
+                                fi
+                            '''
+                        } catch (Exception e) {
+                            echo "No backend allure results to restore: ${e.getMessage()}"
+                        }
+                    }
                     
                     // Создаем environment.properties для Allure (в конце, чтобы не перезаписать результаты)
                     sh '''
